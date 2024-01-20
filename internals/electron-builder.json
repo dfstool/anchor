@@ -2,7 +2,7 @@
   "appId": "com.greymass.anchordesktop.release",
   "productName": "DFS Anchor Wallet",
   "afterSign": "internals/macos/notarize.js",
-  "artifactName": "${os}-${name}-${version}-${arch}.${ext}",
+  "artifactName": "${os}-dfs-${name}-${version}-${arch}.${ext}",
   "asar": true,
   "directories": {
     "buildResources": "resources",
