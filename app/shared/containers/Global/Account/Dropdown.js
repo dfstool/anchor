@@ -101,7 +101,7 @@ class GlobalAccountDropdown extends PureComponent<Props> {
               : false
             }
             {(options.length > 0)
-              ? options.map(w => {
+              ? options.map((w, index) => {
                 const { pubkey } = w;
                 const unlocked = (findIndex(auths.keystore, { pubkey }) >= 0);
                 if (w.mode === 'watch' || w.mode === 'ledger' || unlocked) {
@@ -124,6 +124,7 @@ class GlobalAccountDropdown extends PureComponent<Props> {
                 }
                 return (
                   <GlobalButtonElevate
+                    key={index}
                     onSuccess={(password) => this.swapAccount(w.account, w.authorization, password)}
                     settings={settings}
                     trigger={(

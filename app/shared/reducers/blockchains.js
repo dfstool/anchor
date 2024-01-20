@@ -4,6 +4,11 @@ import * as types from '../actions/types';
 
 const supportedContracts = [
   {
+    // 'dfs-mainnet'
+    chainId: '000d9cae502dd1cc895745e204f83cc892bc4c450f92a03ecd4fe057709853cc',
+    supportedContracts: [],
+  },
+  {
     // 'beos-mainnet'
     chainId: 'cbef47b0b26d2b8407ec6a6f91284100ec32d288a39d4b4bbd49655f7c484112',
     supportedContracts: ['beosexchange', 'bidname', 'producerinfo', 'regproxyinfo'],
@@ -119,6 +124,14 @@ const defaultValues = {
 // Intentionally formatting with JSON styles for easy publishing.
 /* eslint-disable */
 const knownChains = [
+  {
+    "_id": "dfs-mainnet",
+    "chainId": "000d9cae502dd1cc895745e204f83cc892bc4c450f92a03ecd4fe057709853cc",
+    "name": "DFS",
+    "node": "https://api.dfs.land",
+    "symbol": "DFS",
+    "tokenPrecision": 8
+  },
   {
     "_id": "beos-mainnet",
     "chainId": "cbef47b0b26d2b8407ec6a6f91284100ec32d288a39d4b4bbd49655f7c484112",

@@ -14,6 +14,7 @@ import * as GlobalsActions from '../../../shared/actions/globals';
 import * as NavigationActions from '../actions/navigation';
 import * as SyncActions from '../../../shared/actions/sync';
 import * as WalletActions from '../../../shared/actions/wallet';
+import * as DFSActions from '../../../shared/actions/dfs';
 
 import isUnlocked from '../../../shared/utils/Anchor/Unlocked';
 import GlobalAccountDropdown from '../../../shared/containers/Global/Account/Dropdown';
@@ -69,6 +70,15 @@ class MenuContainer extends Component<Props> {
     clearInterval(this.interval);
   }
 
+  //just for debug and test
+  test() { 
+    const {
+      actions,
+    } = this.props;
+    console.log("GetLiqs")
+    actions.getMarkets();
+  }
+
   tick() {
     const {
       actions,
@@ -77,6 +87,7 @@ class MenuContainer extends Component<Props> {
     } = this.props;
     const {
       sync,
+      syncDFS,
       getConstants,
       getGlobals,
       getPriceFeed,
@@ -84,6 +95,8 @@ class MenuContainer extends Component<Props> {
     } = actions;
     if (settings.walletMode !== 'cold' && validate.NODE === 'SUCCESS') {
       sync();
+      syncDFS();
+      // this.test();
     }
   }
 
@@ -205,6 +218,7 @@ function mapDispatchToProps(dispatch) {
       ...NavigationActions,
       ...SyncActions,
       ...WalletActions,
+      ...DFSActions,
     }, dispatch)
   };
 }

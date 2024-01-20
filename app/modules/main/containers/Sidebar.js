@@ -122,11 +122,11 @@ class SidebarContainer extends Component<Props> {
           ? (
             <Menu.Item
               as="a"
-              active={(!module)}
+              active={(!Boolean(module))}
               onClick={this.onClick}
               name=""
               style={{
-                backgroundColor: (!module) ? background : '',
+                backgroundColor: (!Boolean(module)) ? background : '',
                 color,
               }}
             >
@@ -146,11 +146,11 @@ class SidebarContainer extends Component<Props> {
           ? (
             <Menu.Item
               as="a"
-              active={(module && module.startsWith('pending'))}
+              active={(Boolean(module) && module.startsWith('pending'))}
               onClick={this.onClick}
               name="pending"
               style={{
-                backgroundColor: (!module) ? background : '',
+                backgroundColor: (!Boolean(module)) ? background : '',
                 color,
               }}
             >
@@ -182,11 +182,11 @@ class SidebarContainer extends Component<Props> {
             <React.Fragment>
               <Menu.Item
                 as="a"
-                active={module && module.startsWith('wallet')}
+                active={Boolean(module) && module.startsWith('wallet')}
                 onClick={this.onClick}
                 name="wallet"
                 style={{
-                  backgroundColor: (module && module.startsWith('wallet')) ? background : '',
+                  backgroundColor: (Boolean(module) && module.startsWith('wallet')) ? background : '',
                   color,
                 }}
               >
@@ -200,11 +200,11 @@ class SidebarContainer extends Component<Props> {
                 ? (
                   <Menu.Item
                     as="a"
-                    active={module && module.startsWith('account')}
+                    active={Boolean(module) && module.startsWith('account')}
                     onClick={this.onClick}
                     name={`account/${settings.account}`}
                     style={{
-                      backgroundColor: (module && module.startsWith('account')) ? background : '',
+                      backgroundColor: (Boolean(module) && module.startsWith('account')) ? background : '',
                       color,
                     }}
                   >
@@ -219,11 +219,11 @@ class SidebarContainer extends Component<Props> {
               }
               <Menu.Item
                 as="a"
-                active={module && module.startsWith('governance')}
+                active={Boolean(module) && module.startsWith('governance')}
                 onClick={this.onClick}
                 name="governance/producers"
                 style={{
-                  backgroundColor: (module && module.startsWith('governance')) ? background : '',
+                  backgroundColor: (Boolean(module) && module.startsWith('governance')) ? background : '',
                   color,
                 }}
               >
@@ -293,11 +293,11 @@ class SidebarContainer extends Component<Props> {
           ? (
             <Menu.Item
               as="a"
-              active={module && module.startsWith('tools')}
+              active={Boolean(module) && module.startsWith('tools')}
               onClick={this.onClick}
               name="tools"
               style={{
-                backgroundColor: (module && module.startsWith('tools')) ? background : '',
+                backgroundColor: (Boolean(module) && module.startsWith('tools')) ? background : '',
                 color,
               }}
             >

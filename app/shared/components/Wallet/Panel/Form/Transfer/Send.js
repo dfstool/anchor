@@ -364,7 +364,7 @@ class WalletPanelFormTransferSend extends Component<Props> {
       system.ACCOUNT_HAS_CONTRACT_LAST_CONTRACT_HASH &&
       system.ACCOUNT_HAS_CONTRACT_LAST_CONTRACT_HASH !== '0000000000000000000000000000000000000000000000000000000000000000';
 
-    const hasWarnings = exchangeWarning || shouldDisplayTransferingToContractMessage;
+    const hasWarnings = Boolean(exchangeWarning || shouldDisplayTransferingToContractMessage);
 
     return (
       <Form

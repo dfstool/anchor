@@ -33,9 +33,13 @@ let uri = null;
 
 if (process.mainModule.filename.indexOf('app.asar') === -1) {
   log.info('running in debug without asar, modifying path');
+  //resourcePath = F:\AnchorSource\anchor\app\main
   resourcePath = path.join(resourcePath, '../');
+  //resourcePath = F:\AnchorSource\anchor\app
 }
 
+
+//configureStore里的resourcePath只跟国际化有关，跟store无关
 const { store } = configureStore({}, resourcePath);
 
 // bind all console.log to electron-log
@@ -57,7 +61,9 @@ if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true')
 
   log.info('anchor: starting with development mode settings');
 
+  //resourcePath = F:\AnchorSource\anchor\app
   const p = path.join(resourcePath, '..', 'app', 'node_modules');
+  //p = F:\AnchorSource\anchor\app\node_modules
   require('module').globalPaths.push(p);
 
   // Log all messages
@@ -71,6 +77,7 @@ app.on('uncaughtException', error => {
 
 const lock = process.mas || app.requestSingleInstanceLock();
 
+//深度链接 (Deep Links)相关
 if (!lock) {
   app.quit();
 } else {
@@ -101,6 +108,7 @@ app.on('ready', async () => {
   const { settings } = store.getState();
 
   // Initialize the state of signing requests
+  //深度链接 (Deep Links)相关
   enableSigningRequests();
 
   // Establish tray menu

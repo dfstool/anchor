@@ -6,6 +6,7 @@ import { Header, Segment } from 'semantic-ui-react';
 
 import GlobalTransactionHandler from '../Global/Transaction/Handler';
 import ToolsFormCreateAccount from './Form/CreateAccount';
+import ToolsFormCreateAccountDFS from './Form/CreateAccountDFS';
 import CreateBitsharesEosAccount from './Form/CreateBitsharesEosAccount';
 import WalletPanelLocked from '../Wallet/Panel/Locked';
 
@@ -63,6 +64,18 @@ class ToolsCreateAccount extends Component<Props> {
                   settings={settings}
                 />
               ) : (
+                connection.chain === 'DFS' ? 
+                <ToolsFormCreateAccountDFS
+                  account={account}
+                  balance={balances[settings.account]}
+                  connection={connection}
+                  contacts={settings.contacts}
+                  globals={globals}
+                  hideCancel
+                  key="CreateAccountForm"
+                  system={system}
+                  settings={settings}
+                />:
                 <ToolsFormCreateAccount
                   account={account}
                   balance={balances[settings.account]}

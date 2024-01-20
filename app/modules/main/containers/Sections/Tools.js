@@ -28,6 +28,7 @@ import ToolsDisplay from './Tools/Display';
 import ToolsDelegations from './Tools/Delegations';
 import ToolsGlobalState from './Tools/GlobalState';
 import ToolsHome from './Tools/Home';
+import ToolsHomeDFS from './Tools/HomeDFS';
 import ToolsKeys from './Tools/Keys';
 import ToolsKeyConverter from './Tools/KeyConverter';
 import ToolsKeyGenerator from './Tools/KeyGenerator';
@@ -43,13 +44,14 @@ import ToolsSmartContracts from './Tools/SmartContracts';
 import ToolsWalletState from './Tools/WalletState';
 
 import Tools from '../../../../shared/containers/Tools';
+import ToolsDFS from '../../../../shared/containers/ToolsDFS';
 
 import * as NavigationActions from '../../actions/navigation';
 
 class ToolsContainer extends Component<Props> {
   onClick = (e, data) => this.props.actions.changeModule(data.name)
   render() {
-    const { navigation, t } = this.props;
+    const { navigation, t, connection } = this.props;
     let crumb;
     if (navigation && navigation.module && navigation.module !== 'tools') {
       [, crumb] = navigation.module.split('/');
@@ -84,7 +86,10 @@ class ToolsContainer extends Component<Props> {
         </Segment>
         <HashRouter>
           <Switch>
+            {connection.chain === 'DFS'?
+            <Route exact path="/tools" component={ToolsHomeDFS} />:
             <Route exact path="/tools" component={ToolsHome} />
+            }
             <Route path="/tools/accounts" component={ToolsAccounts} />
             <Route path="/tools/airgrabs" component={ToolsAirgrabs} />
             <Route path="/tools/abi_cache" component={ToolsABICache} />
@@ -113,7 +118,11 @@ class ToolsContainer extends Component<Props> {
             <Route path="/tools/state_chain" component={ToolsChainState} />
             <Route path="/tools/state_globals" component={ToolsGlobalState} />
             <Route path="/tools/state_wallet" component={ToolsWalletState} />
+            
+            {connection.chain === 'DFS'?
+            <Route path="/tools/v1" component={ToolsDFS} />:
             <Route path="/tools/v1" component={Tools} />
+            }
           </Switch>
         </HashRouter>
       </React.Fragment>
@@ -123,7 +132,8 @@ class ToolsContainer extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    navigation: state.navigation
+    navigation: state.navigation,
+    connection: state.connection,
   };
 }
 

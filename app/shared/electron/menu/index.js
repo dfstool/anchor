@@ -161,11 +161,11 @@ export default class MenuBuilder {
     }, {
       label: 'Help',
       submenu: [
-        { label: 'Source Code (Github)', click() { shell.openExternal('https://github.com/greymass/anchor'); } },
-        { label: 'Report Bug (Github)', click() { shell.openExternal('https://github.com/greymass/anchor/issues'); } },
-        { label: 'Releases (Github)', click() { shell.openExternal('https://github.com/greymass/anchor/releases'); } },
-        { type: 'separator' },
-        { label: 'Check Updates...', click: (menuItem, browserWindow) => { checkForUpdates(menuItem, browserWindow); } }
+        { label: 'Source Code (Github)', click() { shell.openExternal('https://github.com/dfstool/anchor'); } },
+        { label: 'Report Bug (Github)', click() { shell.openExternal('https://github.com/dfstool/anchor/issues'); } },
+        { label: 'Releases (Github)', click() { shell.openExternal('https://github.com/dfstool/anchor/releases'); } },
+        // { type: 'separator' },
+        // { label: 'Check Updates...', click: (menuItem, browserWindow) => { checkForUpdates(menuItem, browserWindow); } }
       ]
     }];
 

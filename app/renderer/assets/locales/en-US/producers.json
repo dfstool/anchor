@@ -29,7 +29,7 @@
   "producer_voted_connected_to": "connected to:",
   "producer_voter_no_changes": "No changes to save",
   "producer_voter_no_producers_votes_cast_header": "No producers votes cast.",
-  "producer_voter_no_producers_votes_cast_subheader": "Each account is allowed to vote for up to 30 candidates to act as block producers. Use the table on the right to select and vote for the block producers you have choosen.",
+  "producer_voter_no_producers_votes_cast_subheader": "Each account is allowed to vote for up to 1 candidates to act as block producers. Use the table on the right to select and vote for the block producers you have choosen.",
   "producer_voter_preview_close": "Close",
   "producer_voter_preview_confirm_changes_message": "This action will set your selected block producers as follows.",
   "producer_voter_preview_confirm_changes_title": "Confirm your vote selection",

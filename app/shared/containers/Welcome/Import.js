@@ -425,6 +425,7 @@ export default compose(
 )(WelcomeImportContainer);
 
 const blockchains = {
+  '000d9cae502dd1cc895745e204f83cc892bc4c450f92a03ecd4fe057709853cc': 'https://api.dfs.land',
   'cbef47b0b26d2b8407ec6a6f91284100ec32d288a39d4b4bbd49655f7c484112': 'https://api.beos.world',
   'b912d19a6abd2b1b05611ae5be473355d64d95aeff0c09bedc8c166cd6468fe4': 'https://api.testnet.beos.world',
   'd5a3d18fbb3c084e3b1f3fa98c21014b5f3db536cc15d08f9f6479517c6a3d86': 'https://bos.eosn.io',

@@ -12,6 +12,8 @@ import { Button, Card, Header, Segment } from 'semantic-ui-react';
 import GlobalFragmentChainLogo from '../../../../../../../../../shared/components/Global/Fragment/ChainLogo';
 
 const supportedChains = [
+  //DFS
+  '000d9cae502dd1cc895745e204f83cc892bc4c450f92a03ecd4fe057709853cc',
   // EOS
   'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
   // FIO

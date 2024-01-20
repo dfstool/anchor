@@ -18,7 +18,8 @@ import { createHttpHandler } from '../../../shared/utils/http/handler';
 const creationAPI = 'https://create-api.anchor.link';
 
 const historyAPIs = {
-  aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906: 'http://eos.greymass.com',
+  '000d9cae502dd1cc895745e204f83cc892bc4c450f92a03ecd4fe057709853cc': 'http://api.dfs.land',
+  'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906': 'http://eos.greymass.com',
   '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840': 'http://jungle3.greymass.com',
   '384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0': 'http://proton.greymass.com',
   '4667b205c6838ef70ff7988f6e8257e8be0e1284a2f59699054a018f743b1d11': 'http://telos.greymass.com',

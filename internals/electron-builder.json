@@ -1,6 +1,6 @@
 {
   "appId": "com.greymass.anchordesktop.release",
-  "productName": "Anchor Wallet",
+  "productName": "DFS Anchor Wallet",
   "afterSign": "internals/macos/notarize.js",
   "artifactName": "${os}-${name}-${version}-${arch}.${ext}",
   "asar": true,
@@ -112,7 +112,6 @@
     ]
   },
   "win": {
-    "certificateFile": "greymass.pfx",
     "icon": "app/renderer/assets/icons/win/icon.ico",
     "publisherName": "Greymass Inc.",
     "target": [
@@ -120,7 +119,7 @@
         "target": "nsis",
         "arch": [
           "x64",
-          "ia32"
+		  "ia32"
         ]
       }
     ]
@@ -132,6 +131,6 @@
     "deleteAppDataOnUninstall": true,
     "oneClick": false,
     "perMachine": true,
-    "shortcutName": "Anchor Wallet"
+    "shortcutName": "DFS Anchor Wallet"
   }
 }

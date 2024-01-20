@@ -46,7 +46,7 @@
     "prestart": "npm run build",
     "release": "npm run build && electron-builder -mwl",
     "start": "cross-env NODE_ENV=production electron ./app/",
-    "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron --trace-warnings --js-flags='--expose-gc' -r @babel/register ./app/main/main.dev",
+    "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron --inspect --trace-warnings --js-flags='--expose-gc' -r @babel/register ./app/main/main.dev",
     "start-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r @babel/register ./node_modules/webpack/bin/webpack serve --config webpack.config.renderer.dev.js",
     "test": "jest --runInBand"
   },
@@ -73,7 +73,7 @@
     "electron-updater": "^4.3.1",
     "eosio-signing-request": "^2.5.1",
     "eosjs": "16.0.8",
-    "eosjs2": "https://github.com/aaroncox/eosjs2",
+    "eosjs2": "https://github.com/aaroncox/eosjs2.git",
     "fast-sha256": "^1.1.1",
     "history": "^4.7.2",
     "humanize-duration": "^3.20.1",

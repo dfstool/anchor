@@ -6,8 +6,12 @@ import { Grid, Header, Input, Segment, Transition, Table } from 'semantic-ui-rea
 import { get } from 'dot-prop-immutable';
 
 import ProducersModalInfo from './Modal/Info';
-import ProducersTableRow from './Table/Row';
+import ProducersTableRowDFS from './Table/RowDFS';
 import ProducersVoteWeight from './Vote/Weight';
+import BigNumber from 'bn.js';
+
+import compose from 'lodash/fp/compose';
+import { connect } from 'react-redux';
 
 class ProducersTable extends Component<Props> {
   constructor(props) {
@@ -49,11 +53,14 @@ class ProducersTable extends Component<Props> {
       selected,
       settings,
       system,
-      t
+      t, 
+      wallet,
+      dfs,
+      accounts
     } = this.props;
     const {
       query,
-      viewing
+      viewing,
     } = this.state;
     const {
       current
@@ -67,6 +74,16 @@ class ProducersTable extends Component<Props> {
       : 0;
     const loading = (producers.list.length < 1);
     const querying = this.querying();
+    //没有提供LP的情况下，没有voter_info字段
+    let voter = get(accounts, `${wallet.account}.voter_info`, {});
+    let lastVote = 0;
+    if (voter.hasOwnProperty('last_vote_weight')) {
+      lastVote = (voter.last_vote_weight / 100000000).toFixed(0)
+    }
+    let totalVotes = new BigNumber(0)
+    producers.list.forEach(item => {
+      totalVotes = totalVotes.add(new BigNumber(item.votes))
+    })
     let baseTable = <Table.Body />;
     let searchTable = (
       <Table.Body>
@@ -86,7 +103,7 @@ class ProducersTable extends Component<Props> {
             const contracts = get(connection, 'supportedContracts', []);
             const hasInfo = contracts && contracts.includes('producerinfo') && !!(get(producers.producersInfo, producer.owner));
             return (
-              <ProducersTableRow
+              <ProducersTableRowDFS
                 addProducer={this.props.addProducer}
                 connection={connection}
                 getProducerInfo={this.getProducerInfo}
@@ -102,6 +119,7 @@ class ProducersTable extends Component<Props> {
                 system={system}
                 settings={settings}
                 totalVoteWeight={totalVoteWeight}
+                totalVotes={totalVotes}
               />
             );
           })}
@@ -121,7 +139,7 @@ class ProducersTable extends Component<Props> {
 
                 const hasInfo = !!(get(producers.producersInfo, producer.owner));
                 return (
-                  <ProducersTableRow
+                  <ProducersTableRowDFS
                     addProducer={this.props.addProducer}
                     connection={connection}
                     getProducerInfo={this.getProducerInfo}
@@ -145,7 +163,6 @@ class ProducersTable extends Component<Props> {
       }
     }
     const producersVotedIn = connection.chainId !== '73647cde120091e0a4b85bced2f3cfdb3041e266cbbe95cee59b73235a1b3b6f';
-    console.log(connection)
     return (
       <React.Fragment>
         <Segment attached="top" color="purple" piled loading={loading}>
@@ -160,13 +177,14 @@ class ProducersTable extends Component<Props> {
               {(activatedStakePercent < 15 && producersVotedIn && connection.stakedResources)
                 ? (
                   <Header size="small">
-                    {activatedStake.toLocaleString()} {t('block_producer_chain_symbol_staked', { connection: connection.chainSymbol })} ({activatedStakePercent}%)
+                    Your votes: {dfs.votes[wallet.account]}
                     <Header.Subheader>
-                      <ProducersVoteWeight
+                      You last voted: {lastVote}
+                      {/* <ProducersVoteWeight
                         weight={totalVoteWeight}
                       />
                       {' '}
-                      {t('block_producer_total_weight')}
+                      {t('block_producer_total_weight')} */}
                     </Header.Subheader>
                   </Header>
                 ) : (producersVotedIn && connection.stakedResources) ? (
@@ -224,4 +242,18 @@ class ProducersTable extends Component<Props> {
   }
 }
 
-export default withTranslation('producers')(ProducersTable);
+// export default withTranslation('producers')(ProducersTable);
+
+const makeMapStateToProps = () => {
+  const mapStateToProps = (state, props) => ({
+    dfs: state.dfs,
+    wallet: state.wallet,
+    accounts: state.accounts
+  });
+  return mapStateToProps;
+};
+
+export default compose(
+  withTranslation('producers'),
+  connect(makeMapStateToProps)
+)(ProducersTable);

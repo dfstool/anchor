@@ -18,7 +18,7 @@ class GlobalAccountFragmentTokenBalance extends PureComponent<Props> {
     if (balance === false) return '...';
     const formatter = new Intl.NumberFormat(lng, { minimumFractionDigits: precision });
     return (
-      <span className={(parseFloat(balance, 10) === 0) ? 'nil' : false}>
+      <span className={(parseFloat(balance, 10) === 0) ? 'nil' : undefined}>
         {formatter.format(balance.toFixed(precision))}
       </span>
     );
@@ -41,7 +41,7 @@ const mapStateToProps = (state, ownProps) => {
   }
   return {
     balance,
-    precision: get(state, `balances.__contracts.${ownProps.token}.precision.${ownProps.token}`, 4),
+    precision: get(state, `balances.__contracts.${ownProps.token}.precision.${ownProps.token}`, 8),
   };
 };
 

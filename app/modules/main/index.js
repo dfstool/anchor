@@ -37,9 +37,9 @@ class Index extends Component<Props> {
   }
 }
 
-Index.childContextTypes = {
-  persistor: PropTypes.object
-};
+// Index.childContextTypes = {
+//   persistor: PropTypes.object
+// };
 
 const renderApp = routes => {
   render(

@@ -15,7 +15,7 @@ import * as AccountsActions from '../../../../actions/accounts';
 import * as SettingsActions from '../../../../actions/settings';
 import * as WalletsActions from '../../../../actions/wallets';
 
-class GlobalModalAccountImportWatch extends Component<Props> {
+class GlobalModalAccountImportWatchDFS extends Component<Props> {
   state = {
     allValid: false,
     loaded: [],
@@ -56,7 +56,9 @@ class GlobalModalAccountImportWatch extends Component<Props> {
   onChange = (e, data) => this.setState(data);
   onSelect = () => {
     const { value } = this.state;
-    const loaded = [...this.state.loaded];
+    // const loaded = [...this.state.loaded];
+    //需要将上一次的删掉
+    const loaded = [];
     const existing = loaded.indexOf(value);
     if (existing < 0) {
       loaded.push(value);
@@ -68,8 +70,10 @@ class GlobalModalAccountImportWatch extends Component<Props> {
       value: ''
     });
   }
-  onToggleSelected = (e, { checked, name }) => {
-    const selected = [...this.state.selected];
+  onToggleSelected = (e, { checked, name, value }) => {
+    // const selected = [...this.state.selected];
+    //设置成radio
+    const selected = [];
     const existing = selected.indexOf(name);
     if (checked) {
       if (existing === -1) {
@@ -79,6 +83,11 @@ class GlobalModalAccountImportWatch extends Component<Props> {
       selected.splice(existing, 1);
     }
     this.setState({ selected });
+    //name=`${account}@${type}@${pubkey}`
+    //value=pubkey
+    //checkedboolean
+    // console.log(name, value, checked)
+    this.props.onChange(e, { name, value, valid: checked });
   }
   onRemoveSelected = (e, { name }) => {
     const loaded = [...this.state.loaded];
@@ -106,12 +115,7 @@ class GlobalModalAccountImportWatch extends Component<Props> {
       value
     } = this.state;
     return (
-      <Tab.Pane>
-        <Segment basic>
-          <Header
-            content={t('global_account_import_watch_header')}
-            subheader={t('global_account_import_watch_description')}
-          />
+        <div basic>
           <Form>
             <Form.Group>
               <GlobalFormFieldAccount
@@ -156,7 +160,7 @@ class GlobalModalAccountImportWatch extends Component<Props> {
                               checked={isSelected}
                               label={(
                                 <Header
-                                  style={{ cursor: 'pointer' }}
+                                  style={{ cursor: 'pointer', width: "100%" }}
                                 >
                                   <Icon
                                     color={(isSelected) ? 'green' : 'grey'}
@@ -168,6 +172,7 @@ class GlobalModalAccountImportWatch extends Component<Props> {
                                       authorization={type}
                                       pubkey={pubkey}
                                     />
+                                    <span style={{ opacity: 0.4, paddingLeft: "20px"}}>{pubkey.includes("PUB_WA")? "WA": "K1"}</span>
                                   </Header.Content>
                                 </Header>
                               )}
@@ -197,25 +202,8 @@ class GlobalModalAccountImportWatch extends Component<Props> {
             )
             : false
           }
-        </Segment>
-        <Divider />
-        <Segment basic clearing>
-          <Button
-            floated="left"
-            onClick={onClose}
-          >
-            <Icon name="x" /> {t('cancel')}
-          </Button>
-          <Button
-            color="green"
-            content={t('global_button_account_import_action')}
-            disabled={selected.length === 0}
-            floated="right"
-            icon="circle plus"
-            onClick={this.importAccounts}
-          />
-        </Segment>
-      </Tab.Pane>
+          <Divider />
+        </div>
     );
   }
 }
@@ -246,4 +234,4 @@ export default compose(
     withRef: true
   }),
   connect(mapStateToProps, mapDispatchToProps)
-)(GlobalModalAccountImportWatch);
+)(GlobalModalAccountImportWatchDFS);

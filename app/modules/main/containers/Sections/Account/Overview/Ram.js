@@ -41,7 +41,7 @@ class AccountOverviewRam extends Component<Props> {
     } = this.state;
     return (
       <Segment>
-        <Grid divided fluid stackable>
+        <Grid divided fluid={true} stackable>
           <Grid.Row>
             <Grid.Column width={4}>
               <Header size="large" textAlign="center">

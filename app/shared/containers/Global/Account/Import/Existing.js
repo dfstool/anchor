@@ -10,6 +10,7 @@ import GlobalModalAccountImportCert from './Cert';
 import GlobalModalAccountImportHot from './Hot';
 import GlobalModalAccountImportLedgerAccounts from './Ledger/Accounts';
 import GlobalModalAccountImportManual from './Manual';
+import GlobalModalAccountImportManualDFS from './ManualDFS';
 import GlobalModalAccountImportWatch from './Watch';
 
 import * as SettingsActions from '../../../../actions/settings';
@@ -55,12 +56,46 @@ class GlobalModalAccountImportExisting extends Component<Props> {
         case 'watch':
           return <GlobalModalAccountImportWatch onClose={this.onClose} />;
         case 'manual':
-          return <GlobalModalAccountImportManual onClose={this.onClose} />;
+          if (connection.chain === 'DFS') {
+            return <GlobalModalAccountImportManualDFS onClose={this.onClose} />;
+          } else {
+            return <GlobalModalAccountImportManual onClose={this.onClose} />;
+          }
         default:
           break;
       }
     }
-    return (
+    return connection.chain === 'DFS'? (
+      <Tab.Pane>
+        <Segment basic>
+          <Header
+            content={t('global_account_import_exist_header_five')}
+            subheader={t('global_account_import_exist_subheader_five')}
+          />
+          <Button
+            color="blue"
+            content={t('global_account_import_exist_button_five')}
+            icon="write"
+            pane="manual"
+            onClick={this.onClick}
+          />
+        </Segment> 
+        <Segment basic>
+          <Header
+            content={t('global_account_import_exist_header_three')}
+            subheader={t('global_account_import_exist_header_four')}
+          />
+          <Button
+            color="blue"
+            content={t('global_account_import_exist_button_four')}
+            icon="eye"
+            pane="watch"
+            onClick={this.onClick}
+          />
+        </Segment>       
+      </Tab.Pane>
+      
+    ) : (
       <Tab.Pane>
         <Segment basic>
           <Header

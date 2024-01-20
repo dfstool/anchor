@@ -5,7 +5,7 @@ import { Button, Divider, Icon, Segment, Table, Header, Message } from 'semantic
 
 import GlobalDataBytes from '../../../Global/Data/Bytes';
 
-class ToolsFormCreateAccountConfirming extends Component<Props> {
+class ToolsFormCreateAccountConfirmingDFS extends Component<Props> {
   onConfirm = () => {
     const {
       onConfirm
@@ -38,9 +38,9 @@ class ToolsFormCreateAccountConfirming extends Component<Props> {
           ) : (
             <p>The following account will be created at an unknown cost.</p>
           )}
-          <p>
+          {/* <p>
             {`${t('tools_form_create_account_confirming_header_two')} ${totalDelegated.toFixed(connection.tokenPrecision)} ${connection.chainSymbol || 'EOS'} ${t('tools_form_create_account_confirming_header_three')}`}
-          </p>
+          </p> */}
         </Header>
         <Table size="small" celled>
           <Table.Body>
@@ -78,7 +78,7 @@ class ToolsFormCreateAccountConfirming extends Component<Props> {
                 />
               </Table.Cell>
             </Table.Row>
-            <Table.Row>
+            {/* <Table.Row>
               <Table.Cell width={8}>
                 {t('tools_form_create_account_delegated_bw_label', { chainSymbol: connection.chainSymbol })}
               </Table.Cell>
@@ -93,7 +93,7 @@ class ToolsFormCreateAccountConfirming extends Component<Props> {
               <Table.Cell width={8}>
                 {delegatedCpu}
               </Table.Cell>
-            </Table.Row>
+            </Table.Row> */}
           </Table.Body>
         </Table>
         {(transferTokens)
@@ -123,4 +123,4 @@ class ToolsFormCreateAccountConfirming extends Component<Props> {
   }
 }
 
-export default withTranslation('tools')(ToolsFormCreateAccountConfirming);
+export default withTranslation('tools')(ToolsFormCreateAccountConfirmingDFS);

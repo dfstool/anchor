@@ -5,21 +5,31 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import Producers from '../../../../../shared/components/Producers';
+import ProducersDFS from '../../../../../shared/components/ProducersDFS';
 
 import * as ProducersActions from '../../../../../shared/actions/producers';
 import * as SystemStateActions from '../../../../../shared/actions/system/systemstate';
 import * as TableActions from '../../../../../shared/actions/table';
 import * as VoteProducerActions from '../../../../../shared/actions/system/voteproducer';
 import * as WalletActions from '../../../../../shared/actions/wallet';
+import * as DFSActions from '../../../../../shared/actions/dfs';
 
 import makeGetKeysUnlocked from '../../../../../shared/selectors/getKeysUnlocked';
 
 class GovernenceProducersContainer extends Component<Props> {
   render() {
+    const {
+      connection,
+    } = this.props;
+    
     return (
+      connection.chain === 'DFS'?
+      <ProducersDFS
+        {...this.props}
+      /> : 
       <Producers
         {...this.props}
-      />
+      />      
     );
   }
 }
@@ -42,6 +52,7 @@ const makeMapStateToProps = () => {
     transaction: state.transaction,
     validate: state.validate,
     wallet: state.wallet,
+    dfs: state.dfs
   });
   return mapStateToProps;
 };
@@ -53,7 +64,8 @@ function mapDispatchToProps(dispatch) {
       ...SystemStateActions,
       ...TableActions,
       ...VoteProducerActions,
-      ...WalletActions
+      ...WalletActions, 
+      ...DFSActions
     }, dispatch)
   };
 }

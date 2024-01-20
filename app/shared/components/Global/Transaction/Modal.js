@@ -98,7 +98,7 @@ class GlobalTransactionModal extends Component<Props> {
         open={openModal || open}
         onOpen={this.onOpen}
         onClose={this.onClose}
-        size={size || 'wide'}
+        size={size || 'large'}
       >
         {(title)
           ? (

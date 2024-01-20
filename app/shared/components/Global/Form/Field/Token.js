@@ -59,7 +59,7 @@ export default class GlobalFormFieldToken extends Component<Props> {
         loading={loading}
         name={name}
         onChange={this.onChange}
-        placeholder={placeholder || '0.0000'}
+        placeholder={placeholder || '0.00000000'}
         readOnly={readOnly}
       />
     );

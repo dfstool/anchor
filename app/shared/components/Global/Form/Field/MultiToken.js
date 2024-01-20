@@ -91,7 +91,7 @@ export default class GlobalFormFieldMultiToken extends Component<Props> {
           loading={loading}
           name={name}
           onChange={this.onChange}
-          placeholder="0.0000"
+          placeholder="0.00000000"
           style={style}
         >
           <Dropdown

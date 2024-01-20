@@ -13,7 +13,9 @@ import OverviewSidebarContainer from './Overview/Sidebar';
 import { getAccount } from '../../../../shared/actions/accounts';
 import NavigationActions from '../../actions/navigation';
 import OverviewMenu from '../../components/Overview/Menu';
+import OverviewMenuDFS from '../../components/Overview/MenuDFS';
 import OverviewTable from '../../components/Overview/Table';
+import OverviewTableDFS from '../../components/Overview/TableDFS';
 
 class OverviewContainer extends Component<Props> {
   state = {
@@ -109,11 +111,18 @@ class OverviewContainer extends Component<Props> {
                 content={t('main_sections_overview_grid_header')}
                 subheader={t('main_sections_overview_grid_subheader')}
               />
+              {chainSymbol === 'DFS'? 
+              <OverviewMenuDFS
+                stakedResources={stakedResources}
+                view={view}
+                viewChange={this.viewChange}
+              /> :
               <OverviewMenu
                 stakedResources={stakedResources}
                 view={view}
                 viewChange={this.viewChange}
               />
+              }
               <Segment color="green" style={{ marginTop: 0 }}>
                 <Grid style={{ marginBottom: 0 }}>
                   <Grid.Row>
@@ -160,15 +169,26 @@ class OverviewContainer extends Component<Props> {
                     </Grid.Column>
                   </Grid.Row>
                 </Grid>
-                <OverviewTable
-                  chainSymbol={chainSymbol}
-                  pricefeed={pricefeed}
-                  settings={settings}
-                  supportedContracts={supportedContracts}
-                  stakedResources={stakedResources}
-                  view={view}
-                  wallets={wallets}
-                />
+                {chainSymbol === 'DFS'? 
+                  <OverviewTableDFS
+                    chainSymbol={chainSymbol}
+                    pricefeed={pricefeed}
+                    settings={settings}
+                    supportedContracts={false}
+                    stakedResources={false}
+                    view={view}
+                    wallets={wallets}
+                  /> : 
+                  <OverviewTable
+                    chainSymbol={chainSymbol}
+                    pricefeed={pricefeed}
+                    settings={settings}
+                    supportedContracts={supportedContracts}
+                    stakedResources={stakedResources}
+                    view={view}
+                    wallets={wallets}
+                  />
+                }
                 <Container
                   fluid
                   style={{ marginTop: '1em' }}

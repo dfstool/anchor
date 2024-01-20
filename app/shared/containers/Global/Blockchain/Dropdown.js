@@ -172,7 +172,7 @@ class GlobalBlockchainDropdown extends Component<Props> {
         fluid={fluid}
         item
         labeled
-        placeholder={showName ? t('dropdown_select_blockchain') : false}
+        placeholder={showName ? t('dropdown_select_blockchain') : ""}
         selection={selection}
         style={style}
         trigger={trigger}

@@ -48,7 +48,7 @@ export default class GlobalFormFieldRam extends Component<Props> {
         loading={loading}
         name={name}
         onChange={this.onChange}
-        placeholder="0"
+        placeholder="minimum 2000"
         readOnly={readOnly}
       />
     );

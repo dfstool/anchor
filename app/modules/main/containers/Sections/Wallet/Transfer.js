@@ -186,8 +186,8 @@ class WalletTransferContainer extends Component<Props> {
                   )
                   : false
                 }
-                {filteredTokens.map((symbol) => (
-                  <Table.Row>
+                {filteredTokens.map((symbol, index) => (
+                  <Table.Row key={index}>
                     <Table.Cell textAlign="right">{symbol}</Table.Cell>
                     <Table.Cell
                       onClick={() => this.props.actions.transferSetAsset(

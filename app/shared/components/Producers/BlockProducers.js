@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { get } from 'dot-prop-immutable';
 
 import ProducersTable from './BlockProducers/Table';
+import ProducersTableDFS from './BlockProducers/TableDFS';
 import ProducersTablePlaceholder from './BlockProducers/Table/Placeholder';
 
 class BlockProducers extends Component<Props> {
@@ -154,6 +155,27 @@ class BlockProducers extends Component<Props> {
                   onBottomVisible={this.loadMore}
                   once={false}
                 >
+                  {connection.chain === 'DFS'?
+                  <ProducersTableDFS
+                    account={accounts[settings.account]}
+                    actions={actions}
+                    addProducer={addProducer}
+                    amount={amount}
+                    attached="top"
+                    connection={connection}
+                    globals={globals}
+                    isMainnet={isMainnet}
+                    isProxying={isProxying}
+                    isQuerying={this.isQuerying}
+                    keys={keys}
+                    producers={producers}
+                    removeProducer={removeProducer}
+                    resetDisplayAmount={this.resetDisplayAmount}
+                    selected={selected}
+                    settings={settings}
+                    system={system}
+                    isValidUser={isValidUser}
+                  /> : 
                   <ProducersTable
                     account={accounts[settings.account]}
                     actions={actions}
@@ -173,7 +195,9 @@ class BlockProducers extends Component<Props> {
                     settings={settings}
                     system={system}
                     isValidUser={isValidUser}
-                  />
+                  />                    
+                  }
+
                 </Visibility>
               )]
               : (

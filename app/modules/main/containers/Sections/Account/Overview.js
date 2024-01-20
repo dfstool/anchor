@@ -117,6 +117,7 @@ class AccountOverview extends Component<Props> {
     const {
       system,
       t,
+      connection
     } = this.props;
     const {
       account,
@@ -140,7 +141,7 @@ class AccountOverview extends Component<Props> {
     const refreshing = (system.GET_ACCOUNT_LAST_ACCOUNT === account && system.GET_ACCOUNT === 'PENDING');
     return (
       <React.Fragment>
-        <Container fluid clearing>
+        <Container fluid clearing={true}>
           <Button
             basic
             color="grey"
@@ -165,20 +166,25 @@ class AccountOverview extends Component<Props> {
               <AccountOverviewRam
                 account={account}
               />
-              <AccountOverviewResource
-                account={account}
-                pstate={pstate}
-                sample={sample}
-                resource="cpu"
-                rstate={rstate}
-              />
-              <AccountOverviewResource
-                account={account}
-                pstate={pstate}
-                sample={sample}
-                resource="net"
-                rstate={rstate}
-              />
+              {connection.chainSymbol !== 'DFS'? 
+              <>
+                <AccountOverviewResource
+                  account={account}
+                  pstate={pstate}
+                  sample={sample}
+                  resource="cpu"
+                  rstate={rstate}
+                />
+                <AccountOverviewResource
+                  account={account}
+                  pstate={pstate}
+                  sample={sample}
+                  resource="net"
+                  rstate={rstate}
+                />
+              </>
+              : false
+              }
             </React.Fragment>
           )
           : false

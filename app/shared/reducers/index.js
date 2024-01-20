@@ -14,6 +14,7 @@ import chain from './chain';
 import connection from './connection';
 import contracts from './contracts';
 import customtokens from './customtokens';
+import dfs from './dfs';
 import features from './system/features';
 import fuel from './fuel';
 import globals from './globals';
@@ -50,6 +51,7 @@ const rootReducer = combineReducers({
   connection,
   contracts,
   customtokens,
+  dfs,
   features,
   fuel,
   globals,
