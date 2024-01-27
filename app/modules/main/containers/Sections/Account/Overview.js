@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import compose from 'lodash/fp/compose';
 import { withRouter } from 'react-router-dom';
-import { Button, Container, Header, Icon, Segment } from 'semantic-ui-react';
+import { Button, Container, Header, Icon, Segment, Checkbox } from 'semantic-ui-react';
 import { Resources } from '@greymass/eosio-resources';
 import AccountHeader from './Header';
 import AccountOverviewRam from './Overview/Ram';
@@ -13,6 +13,7 @@ import AccountOverviewResource from './Overview/Resource';
 
 import * as AccountsActions from '../../../../../shared/actions/accounts';
 import * as NavigationActions from '../../../actions/navigation';
+import * as DFSActions from '../../../../../shared/actions/dfs';
 
 class AccountOverview extends Component<Props> {
   constructor(props) {
@@ -22,6 +23,7 @@ class AccountOverview extends Component<Props> {
       Object.keys(this.props.accounts).includes(account)
       && Object.keys(this.props.balances).includes(account)
     );
+    const checked = this.props.dfs.smoothMode;
     this.state = {
       account,
       expanded: {},
@@ -29,6 +31,7 @@ class AccountOverview extends Component<Props> {
       sample: false,
       rstate: false,
       pstate: false,
+      checked
     };
   }
   componentDidMount() {
@@ -113,6 +116,10 @@ class AccountOverview extends Component<Props> {
     const { getAccount } = this.props.actions;
     getAccount(this.state.account);
   }
+  onChange = (event, data) => {
+    this.setState({checked: data.checked});
+    this.props.actions.switchSmoothMode(data.checked);
+  }
   render() {
     const {
       system,
@@ -125,6 +132,7 @@ class AccountOverview extends Component<Props> {
       sample,
       pstate,
       rstate,
+      checked
     } = this.state;
     if (!account || account === 'undefined') {
       return (
@@ -142,15 +150,26 @@ class AccountOverview extends Component<Props> {
     return (
       <React.Fragment>
         <Container fluid clearing={true}>
-          <Button
-            basic
-            color="grey"
-            content={t('main_sections_overview_button_one')}
-            floated="right"
-            icon="refresh"
-            loading={refreshing}
-            onClick={this.refresh}
-          />
+          <div style={{float: "right"}}>
+            {connection.chain === 'DFS'?
+            <Checkbox
+              style={{marginRight: "20px"}}
+              toggle={true}
+              type="checkbox"
+              label={t('main_sections_overview_smooth_mode')}
+              onChange={this.onChange}
+              checked={checked}
+            />: false
+            }
+            <Button
+              basic
+              color="grey"
+              content={t('main_sections_overview_button_one')}
+              icon="refresh"
+              loading={refreshing}
+              onClick={this.refresh}
+            />
+          </div>
           <Header
             content={t('main_sections_overview_header_one')}
             subheader={t('main_sections_overview_subheader_one')}
@@ -219,6 +238,7 @@ function mapStateToProps(state) {
     resources: state.resources,
     settings: state.settings,
     system: state.system,
+    dfs: state.dfs,
   };
 }
 
@@ -227,6 +247,7 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators({
       ...NavigationActions,
       ...AccountsActions,
+      ...DFSActions,
     }, dispatch)
   };
 }

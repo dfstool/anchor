@@ -5,7 +5,8 @@ const initialState = {
   voters: {},
   liqs: {},
   markets: [],
-  votes: {}
+  votes: {},
+  smoothMode: true
 };
 
 export default function dfs(state = initialState, action) {
@@ -42,6 +43,10 @@ export default function dfs(state = initialState, action) {
 
     case types.DFS_GET_VOTE_SUCCESS: {
       return set(state, `votes.${action.payload.account}`, action.payload.data)
+    }
+
+    case types.DFS_SWITCH_SMOOTH_MODE: {
+      return set(state, `smoothMode`, action.payload.mode)
     }
 
 

@@ -113,7 +113,7 @@ export function getVote(account) {
   return (dispatch, getState) => {
     const { dfs } = getState();
     let sumDFS = new BigNumber(0);
-    let liqs = dfs.liqs[account];
+    let liqs = dfs.liqs[account]?  dfs.liqs[account]: [];
     let markets = dfs.markets;
     let market = '';
     let vote = '';
@@ -225,6 +225,15 @@ export function voteProducers(producers = [], proxy = '') {
   };
 }
 
+export function switchSmoothMode(mode) {
+  return (dispatch, getState) => {
+    dispatch({
+      type: types.DFS_SWITCH_SMOOTH_MODE,
+      payload: { mode }
+    });
+  };
+}
+
 export default {
   syncDFS,
   getVoter,
@@ -232,6 +241,7 @@ export default {
   getLiq,
   getLiqs,
   getVotes,
-  voteProducers
+  voteProducers,
+  switchSmoothMode,
 
 };

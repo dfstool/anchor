@@ -33,6 +33,7 @@ const persistConfig = {
     'storage',
     'wallet',
     'wallets',
+    'dfs'
   ]
 };
 

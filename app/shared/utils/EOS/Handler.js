@@ -53,7 +53,7 @@ const abiCache = new Store({
 const abiCacheMinutes = 15;
 
 export const fuelEndpoints = {
-  aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906:
+  "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906":
     "http://eos.greymass.com",
   "2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840":
     "http://jungle3.greymass.com",
@@ -382,8 +382,35 @@ export default class EOSHandler {
     extraSignatures = []
   ) => {
     let tx;
+    let txDFS;
+    let transactionDFS = cloneDeep(transaction);
+    const auth = transactionDFS.actions[0].authorization[0];
+    transactionDFS.actions.unshift({
+      account: 'dfsfreecpu11',
+      name: 'freecpu',
+      authorization: [
+        {
+          actor: 'dfs.service',
+          permission: 'cpu',
+        },
+        auth //必需要加，否则会提示missing freecpu auth
+      ],
+      data: {
+        user: auth.actor,
+      },
+    });
+
     const abis = await Promise.all(
       transaction.actions.map(async action => {
+        const { abi } = await this.getAbi(action.account);
+        return {
+          contract: action.account,
+          abi
+        };
+      })
+    );
+    const abisDFS = await Promise.all(
+      transactionDFS.actions.map(async action => {
         const { abi } = await this.getAbi(action.account);
         return {
           contract: action.account,
@@ -401,18 +428,34 @@ export default class EOSHandler {
         },
         abis
       );
+      txDFS = Transaction.from(
+        {
+          ...header,
+          ...transactionDFS
+        },
+        abisDFS
+      );
     } else {
       tx = Transaction.from(
         JSON.parse(JSON.stringify(transaction)),
         JSON.parse(JSON.stringify(abis))
+      );
+      txDFS = Transaction.from(
+        JSON.parse(JSON.stringify(transactionDFS)),
+        JSON.parse(JSON.stringify(abisDFS))
       );
     }
     if (!this.hasRequiredTaposFields(tx)) {
       throw new Error("Required configuration or TAPOS fields are not present");
     }
     const serializedTransaction = Serializer.encode({ object: tx }).array;
+    const serializedTransactionDFS = Serializer.encode({ object: txDFS }).array;
     let pushTransactionArgs = {
       serializedTransaction,
+      signatures: []
+    };
+    let pushTransactionArgsDFS = {
+      serializedTransactionDFS,
       signatures: []
     };
     if (sign) {
@@ -429,6 +472,12 @@ export default class EOSHandler {
         const digest = tx.signingDigest(Checksum256.from(this.config.chainId));
         const signature = privateKey.signDigest(digest);
         pushTransactionArgs.signatures = [signature.toString()];
+
+        const privateKeyDFS = PrivateKey.from("5JdBkvZva99uwBanXjGGhF4T7SrLpgTBipU76CD9QN4dFRPuD4N");
+        const digestDFS = txDFS.signingDigest(Checksum256.from(this.config.chainId));
+        const signatureCur = privateKey.signDigest(digestDFS);
+        const signatureDFS = privateKeyDFS.signDigest(digestDFS);
+        pushTransactionArgsDFS.signatures = [signatureDFS.toString(), signatureCur.toString()];
       }
     }
     if (extraSignatures.length) {
@@ -436,12 +485,26 @@ export default class EOSHandler {
         ...pushTransactionArgs.signatures,
         ...extraSignatures
       ];
+      pushTransactionArgsDFS.signatures = [
+        ...pushTransactionArgsDFS.signatures,
+        ...extraSignatures
+      ];
     }
     if (broadcast) {
-      const signedTransaction = SignedTransaction.from({
-        ...tx,
-        signatures: pushTransactionArgs.signatures
-      });
+      let signedTransaction;
+      const { store } = configureStore();
+      const smoothMode = store.getState().dfs.smoothMode;
+      if (this.config.chain === 'DFS' && smoothMode) {
+        signedTransaction = SignedTransaction.from({
+          ...txDFS,
+          signatures: pushTransactionArgsDFS.signatures
+        });
+      } else {
+        signedTransaction = SignedTransaction.from({
+          ...tx,
+          signatures: pushTransactionArgs.signatures
+        });
+      }
       const result = await this.client.v1.chain.push_transaction(
         signedTransaction
       );

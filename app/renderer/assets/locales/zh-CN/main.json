@@ -54,7 +54,7 @@
   "main_sections_overview_resource_table_popup_three_content": "Tokens this account has staked previously which are now unstaking over the course of 3 days.",
   "main_sections_overview_resource_table_popup_three_trigger": "Unstaking",
   "main_sections_header_header_available": "Available",
-  "main_sections_overview_smooth_mode": "Smooth Mode",
+  "main_sections_overview_smooth_mode": "顺畅模式",
   "main_sections_overview_header_one": "Resource Overview",
   "main_sections_overview_subheader_one": "Overview of resources for the selected account.",
   "main_sections_overview_button_one": "Refresh",
