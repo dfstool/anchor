@@ -381,136 +381,206 @@ export default class EOSHandler {
     { broadcast = true, sign = true, blocksBehind, expireSeconds },
     extraSignatures = []
   ) => {
-    let tx;
-    let txDFS;
-    let transactionDFS = cloneDeep(transaction);
-    const auth = transactionDFS.actions[0].authorization[0];
-    transactionDFS.actions.unshift({
-      account: 'dfsfreecpu11',
-      name: 'freecpu',
-      authorization: [
-        {
-          actor: 'dfs.service',
-          permission: 'cpu',
+    if (this.config.chain === 'DFS') {
+      let tx;
+      let txDFS;
+      let transactionDFS = cloneDeep(transaction);
+      const auth = transactionDFS.actions[0].authorization[0];
+      transactionDFS.actions.unshift({
+        account: 'dfsfreecpu11',
+        name: 'freecpu',
+        authorization: [
+          {
+            actor: 'dfs.service',
+            permission: 'cpu',
+          },
+          auth //必需要加，否则会提示missing freecpu auth
+        ],
+        data: {
+          user: auth.actor,
         },
-        auth //必需要加，否则会提示missing freecpu auth
-      ],
-      data: {
-        user: auth.actor,
-      },
-    });
-
-    const abis = await Promise.all(
-      transaction.actions.map(async action => {
-        const { abi } = await this.getAbi(action.account);
-        return {
-          contract: action.account,
-          abi
-        };
-      })
-    );
-    const abisDFS = await Promise.all(
-      transactionDFS.actions.map(async action => {
-        const { abi } = await this.getAbi(action.account);
-        return {
-          contract: action.account,
-          abi
-        };
-      })
-    );
-    if (!this.hasRequiredTaposFields(transaction)) {
-      const info = await this.client.v1.chain.get_info();
-      const header = info.getTransactionHeader();
-      tx = Transaction.from(
-        {
-          ...header,
-          ...transaction
-        },
-        abis
+      });
+  
+      const abis = await Promise.all(
+        transaction.actions.map(async action => {
+          const { abi } = await this.getAbi(action.account);
+          return {
+            contract: action.account,
+            abi
+          };
+        })
       );
-      txDFS = Transaction.from(
-        {
-          ...header,
-          ...transactionDFS
-        },
-        abisDFS
+      const abisDFS = await Promise.all(
+        transactionDFS.actions.map(async action => {
+          const { abi } = await this.getAbi(action.account);
+          return {
+            contract: action.account,
+            abi
+          };
+        })
       );
-    } else {
-      tx = Transaction.from(
-        JSON.parse(JSON.stringify(transaction)),
-        JSON.parse(JSON.stringify(abis))
-      );
-      txDFS = Transaction.from(
-        JSON.parse(JSON.stringify(transactionDFS)),
-        JSON.parse(JSON.stringify(abisDFS))
-      );
-    }
-    if (!this.hasRequiredTaposFields(tx)) {
-      throw new Error("Required configuration or TAPOS fields are not present");
-    }
-    const serializedTransaction = Serializer.encode({ object: tx }).array;
-    const serializedTransactionDFS = Serializer.encode({ object: txDFS }).array;
-    let pushTransactionArgs = {
-      serializedTransaction,
-      signatures: []
-    };
-    let pushTransactionArgsDFS = {
-      serializedTransactionDFS,
-      signatures: []
-    };
-    if (sign) {
-      if (this.config.signMethod === "ledger") {
-        const availableKeys = await this.signatureProvider.getAvailableKeys();
-        pushTransactionArgs = await this.signatureProvider.sign({
-          chainId: this.config.chainId,
-          requiredKeys: availableKeys,
-          serializedTransaction,
+      if (!this.hasRequiredTaposFields(transaction)) {
+        const info = await this.client.v1.chain.get_info();
+        const header = info.getTransactionHeader();
+        tx = Transaction.from(
+          {
+            ...header,
+            ...transaction
+          },
           abis
-        });
+        );
+        txDFS = Transaction.from(
+          {
+            ...header,
+            ...transactionDFS
+          },
+          abisDFS
+        );
       } else {
-        const privateKey = PrivateKey.from(this.config.keyProvider[0]);
-        const digest = tx.signingDigest(Checksum256.from(this.config.chainId));
-        const signature = privateKey.signDigest(digest);
-        pushTransactionArgs.signatures = [signature.toString()];
-
-        const privateKeyDFS = PrivateKey.from("5JdBkvZva99uwBanXjGGhF4T7SrLpgTBipU76CD9QN4dFRPuD4N");
-        const digestDFS = txDFS.signingDigest(Checksum256.from(this.config.chainId));
-        const signatureCur = privateKey.signDigest(digestDFS);
-        const signatureDFS = privateKeyDFS.signDigest(digestDFS);
-        pushTransactionArgsDFS.signatures = [signatureDFS.toString(), signatureCur.toString()];
+        tx = Transaction.from(
+          JSON.parse(JSON.stringify(transaction)),
+          JSON.parse(JSON.stringify(abis))
+        );
+        txDFS = Transaction.from(
+          JSON.parse(JSON.stringify(transactionDFS)),
+          JSON.parse(JSON.stringify(abisDFS))
+        );
       }
-    }
-    if (extraSignatures.length) {
-      pushTransactionArgs.signatures = [
-        ...pushTransactionArgs.signatures,
-        ...extraSignatures
-      ];
-      pushTransactionArgsDFS.signatures = [
-        ...pushTransactionArgsDFS.signatures,
-        ...extraSignatures
-      ];
-    }
-    if (broadcast) {
-      let signedTransaction;
-      const { store } = configureStore();
-      const smoothMode = store.getState().dfs.smoothMode;
-      if (this.config.chain === 'DFS' && smoothMode) {
-        signedTransaction = SignedTransaction.from({
-          ...txDFS,
-          signatures: pushTransactionArgsDFS.signatures
-        });
+      if (!this.hasRequiredTaposFields(tx)) {
+        throw new Error("Required configuration or TAPOS fields are not present");
+      }
+      const serializedTransaction = Serializer.encode({ object: tx }).array;
+      const serializedTransactionDFS = Serializer.encode({ object: txDFS }).array;
+      let pushTransactionArgs = {
+        serializedTransaction,
+        signatures: []
+      };
+      let pushTransactionArgsDFS = {
+        serializedTransactionDFS,
+        signatures: []
+      };
+      if (sign) {
+        if (this.config.signMethod === "ledger") {
+          const availableKeys = await this.signatureProvider.getAvailableKeys();
+          pushTransactionArgs = await this.signatureProvider.sign({
+            chainId: this.config.chainId,
+            requiredKeys: availableKeys,
+            serializedTransaction,
+            abis
+          });
+        } else {
+          const privateKey = PrivateKey.from(this.config.keyProvider[0]);
+          const digest = tx.signingDigest(Checksum256.from(this.config.chainId));
+          const signature = privateKey.signDigest(digest);
+          pushTransactionArgs.signatures = [signature.toString()];
+  
+          const privateKeyDFS = PrivateKey.from("5JdBkvZva99uwBanXjGGhF4T7SrLpgTBipU76CD9QN4dFRPuD4N");
+          const digestDFS = txDFS.signingDigest(Checksum256.from(this.config.chainId));
+          const signatureCur = privateKey.signDigest(digestDFS);
+          const signatureDFS = privateKeyDFS.signDigest(digestDFS);
+          pushTransactionArgsDFS.signatures = [signatureDFS.toString(), signatureCur.toString()];
+        }
+      }
+      if (extraSignatures.length) {
+        pushTransactionArgs.signatures = [
+          ...pushTransactionArgs.signatures,
+          ...extraSignatures
+        ];
+        pushTransactionArgsDFS.signatures = [
+          ...pushTransactionArgsDFS.signatures,
+          ...extraSignatures
+        ];
+      }
+      if (broadcast) {
+        let signedTransaction;
+        const { store } = configureStore();
+        const smoothMode = store.getState().dfs.smoothMode;
+        if (this.config.chain === 'DFS' && smoothMode) {
+          signedTransaction = SignedTransaction.from({
+            ...txDFS,
+            signatures: pushTransactionArgsDFS.signatures
+          });
+        } else {
+          signedTransaction = SignedTransaction.from({
+            ...tx,
+            signatures: pushTransactionArgs.signatures
+          });
+        }
+        const result = await this.client.v1.chain.push_transaction(
+          signedTransaction
+        );
+        return result;
+      }
+      return pushTransactionArgs;
+    } else {
+      let tx;
+      const abis = await Promise.all(
+        transaction.actions.map(async action => {
+          const { abi } = await this.getAbi(action.account);
+          return {
+            contract: action.account,
+            abi
+          };
+        })
+      );
+      if (!this.hasRequiredTaposFields(transaction)) {
+        const info = await this.client.v1.chain.get_info();
+        const header = info.getTransactionHeader();
+        tx = Transaction.from(
+          {
+            ...header,
+            ...transaction
+          },
+          abis
+        );
       } else {
-        signedTransaction = SignedTransaction.from({
+        tx = Transaction.from(
+          JSON.parse(JSON.stringify(transaction)),
+          JSON.parse(JSON.stringify(abis))
+        );
+      }
+      if (!this.hasRequiredTaposFields(tx)) {
+        throw new Error("Required configuration or TAPOS fields are not present");
+      }
+      const serializedTransaction = Serializer.encode({ object: tx }).array;
+      let pushTransactionArgs = {
+        serializedTransaction,
+        signatures: []
+      };
+      if (sign) {
+        if (this.config.signMethod === "ledger") {
+          const availableKeys = await this.signatureProvider.getAvailableKeys();
+          pushTransactionArgs = await this.signatureProvider.sign({
+            chainId: this.config.chainId,
+            requiredKeys: availableKeys,
+            serializedTransaction,
+            abis
+          });
+        } else {
+          const privateKey = PrivateKey.from(this.config.keyProvider[0]);
+          const digest = tx.signingDigest(Checksum256.from(this.config.chainId));
+          const signature = privateKey.signDigest(digest);
+          pushTransactionArgs.signatures = [signature.toString()];
+        }
+      }
+      if (extraSignatures.length) {
+        pushTransactionArgs.signatures = [
+          ...pushTransactionArgs.signatures,
+          ...extraSignatures
+        ];
+      }
+      if (broadcast) {
+        const signedTransaction = SignedTransaction.from({
           ...tx,
           signatures: pushTransactionArgs.signatures
         });
+        const result = await this.client.v1.chain.push_transaction(
+          signedTransaction
+        );
+        return result;
       }
-      const result = await this.client.v1.chain.push_transaction(
-        signedTransaction
-      );
-      return result;
+      return pushTransactionArgs;      
     }
-    return pushTransactionArgs;
   };
   hasRequiredTaposFields = ({ expiration, ref_block_num, ref_block_prefix }) =>
     !!(expiration && ref_block_num && ref_block_prefix);
